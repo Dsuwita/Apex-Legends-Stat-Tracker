@@ -120,19 +120,3 @@ def checkAuth(auth):
         return(False)
 
     return(True)
-
-# auth = "cd9049972fd3dacd6c4df61ba4fc6794"
-# addProfile("desolator078", "PC")
-# addProfile("swiftblade105", "PC")
-# addProfile("Kurstsoul", "PC")
-# addProfile("aldot236", "PC")
-
-# compareProfile("Kurstsoul", "PC")
-# compareProfile("desolator078", "PC")
-# compareProfile("swiftblade105", "PC")
-# compareProfile("aldot236", "PC")
-
-# updateProfile("desolator078", "PC")
-# updateProfile("swiftblade105", "PC")
-
-# deleteProfile("desolator078")
