@@ -13,6 +13,6 @@ To get started:
         pip install pandas
         pip install tkinter
 
-    (4) Open a console and go to the location of the file
+    (4) Open a console and go to the location of the files
 
     (5) run the driver program using the following command: python3 driver.py
