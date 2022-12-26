@@ -113,9 +113,16 @@ def updateProfile(player, platform,auth):
     addProfile(player,platform,auth,True)
 
 def deleteProfile(player):
+    os.system('cls')
+    if(not findprofile(player)):
+        print("No such profile has been added, please try again.")
+        return()
+    
     df = pd.read_csv('profiles.csv')
     df = df[~df.username.isin([player])]
     df.to_csv('profiles.csv', index=False)
+    
+    print("Profile " + player + " has been successfully deleted.")
 
 def checkAuth(auth):
     url = "https://api.mozambiquehe.re/predator?auth=" + auth
