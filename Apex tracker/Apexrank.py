@@ -25,7 +25,7 @@ def addProfile(player,platform,auth,update=False):
             print("New session initialized for " + player + ".")
 
     else:
-        print("Profile already exists please compare instead.")
+        print("Profile already exists please initialize a session instead.")
 
 def compareProfile(player, platform,auth):
     if(checkAuth(auth) == False):
