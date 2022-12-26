@@ -10,9 +10,8 @@ To get started:
 
     (4) Install these packages to use (copy paste into console):
         pip install requests
-        pip install csv
         pip install datetime
         pip install pandas
-        pip install tkinter
+        pip install tk
 
     (5) run the driver program using the following command: python3 driver.py
