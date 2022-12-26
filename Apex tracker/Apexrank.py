@@ -5,11 +5,16 @@ import pandas as pd
 import os
 
 def addProfile(player,platform,auth,update=False):
+    os.system('cls')
+
     if(checkAuth(auth) == False):
         print("API key invalid, please enter a valid key")
         return()
     
-    os.system('cls')
+    if(checkProfile(player,platform,auth) == False):
+        print("Player not found, Please try again.")
+        return()
+    
     today = datetime.datetime.now()
     rawData = getCurrentRank(player,platform,auth)
     data = [player, rawData["rankName"], rawData["rankDiv"], rawData["rankScore"], today, platform]
@@ -28,11 +33,15 @@ def addProfile(player,platform,auth,update=False):
         print("Profile already exists please initialize a session instead.")
 
 def compareProfile(player, platform,auth):
+    os.system('cls')
     if(checkAuth(auth) == False):
         print("API key invalid, please enter a valid key")
         return()
 
-    os.system('cls')
+    if(checkProfile(player,platform,auth) == False):
+        print("Player not found, Please try again.")
+        return()
+
     today = datetime.datetime.now()
     rawData = getCurrentRank(player,platform,auth)
     newData = [player, rawData["rankName"], rawData["rankDiv"], rawData["rankScore"], today, platform]
@@ -64,6 +73,7 @@ def compareProfile(player, platform,auth):
 
 def findprofile(player):
     os.system('cls')
+    
     with open('profiles.csv', mode ='r') as file:
         csvFile = csv.reader(file)
 
@@ -117,6 +127,22 @@ def checkAuth(auth):
     response = requests.request("GET", url, headers=headers)
 
     if(response.text == "Error: API key doesn't exist !"):
+        return(False)
+
+    return(True)
+
+def checkProfile(player,platform,auth):
+    url = "https://api.mozambiquehe.re/bridge?auth=" + auth + "&player=" + player + "&platform=" + platform
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("GET", url, headers=headers)
+
+    data = response.json()
+
+    if('Error' in data):
         return(False)
 
     return(True)
