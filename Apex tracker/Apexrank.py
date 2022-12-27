@@ -6,17 +6,13 @@ import os
 
 def addProfile(player,platform,auth,update=False):
     os.system('cls')
-
-    if(checkAuth(auth) == False):
-        print("API key invalid, please enter a valid key")
-        return()
-    
-    if(checkProfile(player,platform,auth) == False):
-        print("Player not found, Please try again.")
-        return()
     
     today = datetime.datetime.now()
     rawData = getCurrentRank(player,platform,auth)
+
+    if(rawData == False):
+        return()
+
     data = [player, rawData["rankName"], rawData["rankDiv"], rawData["rankScore"], today, platform]
 
     if (findprofile(player) == 0):
@@ -34,16 +30,13 @@ def addProfile(player,platform,auth,update=False):
 
 def compareProfile(player, platform,auth):
     os.system('cls')
-    if(checkAuth(auth) == False):
-        print("API key invalid, please enter a valid key")
-        return()
-
-    if(checkProfile(player,platform,auth) == False):
-        print("Player not found, Please try again.")
-        return()
 
     today = datetime.datetime.now()
     rawData = getCurrentRank(player,platform,auth)
+
+    if(rawData == False):
+        return()
+
     newData = [player, rawData["rankName"], rawData["rankDiv"], rawData["rankScore"], today, platform]
 
     oldData = findprofile(player)
@@ -73,7 +66,7 @@ def compareProfile(player, platform,auth):
 
 def findprofile(player):
     os.system('cls')
-    
+
     with open('profiles.csv', mode ='r') as file:
         csvFile = csv.reader(file)
 
@@ -96,7 +89,16 @@ def getCurrentRank(player,platform,auth):
 
     response = requests.request("GET", url, headers=headers)
 
+    if(response.text == "Error: API key doesn't exist !"):
+        print("API key invalid, please enter a valid key")
+        return(False)
+
     data = response.json()
+
+    if('Error' in data):
+        print("Player not found, Please try again.")
+        return(False)
+
 
     output = {
                 'rankScore' : data["global"]["rank"]["rankScore"], 
@@ -123,33 +125,3 @@ def deleteProfile(player):
     df.to_csv('profiles.csv', index=False)
     
     print("Profile " + player + " has been successfully deleted.")
-
-def checkAuth(auth):
-    url = "https://api.mozambiquehe.re/predator?auth=" + auth
-
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers)
-
-    if(response.text == "Error: API key doesn't exist !"):
-        return(False)
-
-    return(True)
-
-def checkProfile(player,platform,auth):
-    url = "https://api.mozambiquehe.re/bridge?auth=" + auth + "&player=" + player + "&platform=" + platform
-
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("GET", url, headers=headers)
-
-    data = response.json()
-
-    if('Error' in data):
-        return(False)
-
-    return(True)
