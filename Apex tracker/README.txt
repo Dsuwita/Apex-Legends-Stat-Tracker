@@ -2,13 +2,13 @@ APEX LEGENDS RANK TRACKER
 
 To get started:
 
-    (1) Get an auth key from https://portal.apexlegendsapi.com/.
+    (1) Get an auth key from https://portal.apexlegendsapi.com/
 
-    (2) Make sure Python3 is installed.
-    
-    (3) open the folder with the files, right click and select the open in terminal option.
+    (2) Make sure Python3 is installed
 
-    (4) Install these packages to use (copy paste into console):
+    (3) Open a console and go to the location of the file
+
+    (4) Install these packages to use
         pip install requests
         pip install datetime
         pip install pandas
