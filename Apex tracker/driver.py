@@ -2,7 +2,7 @@ from Apexrank import *
 from tkinter import *
 
 main = Tk()  
-main.geometry("300x275") 
+main.geometry("300x300") 
 main.resizable(False,False)
 main.title("Apex rank tracker")
 
@@ -56,6 +56,18 @@ def deleteProfile_Clicked():
     if(username != ""):
         deleteProfile(username)
 
+def recordGame_Clicked():
+    auth = auth_input.get()
+    username = username_input.get()
+    platform = platform_input.get()
+
+    if(platform == "PC (Steam/Origin)"):
+        platform = "PC"
+    else:
+        platform = "Console"
+
+    recordGame(username, platform, auth)
+
 title_banner = Label(main, 
                         text = "Apex rank tracker", 
                         font=("Helvetica", 18)
@@ -102,7 +114,7 @@ addProfile_button = Button(main,
                           ).place(x = 40, y = 180)
 
 compareProfile_button = Button(main, 
-                               text = "Compare Profile", 
+                               text = "  Session Status  ", 
                                command=lambda: compareProfile_Clicked()
                               ).place(x = 170, y = 180)
 
@@ -116,6 +128,10 @@ deleteProfile_button = Button(main,
                               command=lambda: deleteProfile_Clicked()
                              ).place(x = 170, y = 220)
 
+recordGame_button = Button(main, 
+                              text = "                        Record Game                        ", 
+                              command=lambda: recordGame_Clicked()
+                             ).place(x = 40, y = 260)
 
 main.mainloop()
 

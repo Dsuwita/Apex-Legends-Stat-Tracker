@@ -44,11 +44,13 @@ def compareProfile(player, platform,auth):
         print("Profile not found please add instead.")
 
     else:
+        NetChange = int(newData[3]) - int(oldData[3])
+
         print("PLAYER STATISTICS")
         print("Username : " + player)
         print("Platform : " + platform)
         print("Rank Change: ")
-        print(f"     Net Change = {int(newData[3]) - int(oldData[3])}")
+        print(f"     Net Change = {NetChange}")
 
         print("     ", end = "")
         for i in range(1,5):
@@ -61,8 +63,17 @@ def compareProfile(player, platform,auth):
         print("     ", end = "")
         for i in range(1,5):
             print(newData[i], end = " ")
+        
+        print("\n\n")
 
-        print("\n\n\n")
+        games = getGameHistory(player)
+        
+        print("Games played this session:")
+
+        for i in games:
+            print(f'{i[1]} RP as {i[2]}')
+
+        print(f'{NetChange/len(games)} RP per game on average (Current Session)')
 
 def findprofile(player):
     os.system('cls')
@@ -103,13 +114,15 @@ def getCurrentRank(player,platform,auth):
     output = {
                 'rankScore' : data["global"]["rank"]["rankScore"], 
                 'rankName'  : data["global"]["rank"]["rankName"], 
-                'rankDiv'   : data["global"]["rank"]["rankDiv"]
+                'rankDiv'   : data["global"]["rank"]["rankDiv"],
+                'legend'    : data["legends"]["selected"]["LegendName"]
              }
-
 
     return(output)
 
 def updateProfile(player, platform,auth):
+    clearGames(player)
+
     deleteProfile(player)
 
     addProfile(player,platform,auth,True)
@@ -120,8 +133,51 @@ def deleteProfile(player):
         print("No such profile has been added, please try again.")
         return()
     
+    clearGames(player)
     df = pd.read_csv('profiles.csv')
     df = df[~df.username.isin([player])]
     df.to_csv('profiles.csv', index=False)
     
     print("Profile " + player + " has been successfully deleted.")
+
+def recordGame(player,platform,auth):
+    os.system('cls')
+
+    oldData = findprofile(player)
+    if (findprofile(player) == 0):
+        print("Profile not found, please add profile first.")
+        return()
+
+    rawData = getCurrentRank(player,platform,auth)
+
+    if(rawData == False):
+        return()
+
+    data = [player,int(oldData[3]) - rawData["rankScore"], rawData["legend"]]
+
+    with open('games.csv', mode ='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(data)
+
+    print("Game recorded successfully.")
+
+def clearGames(player):
+    df = pd.read_csv('games.csv')
+    df = df[~df.username.isin([player])]
+    df.to_csv('games.csv', index=False)
+
+def getGameHistory(player):
+    with open('games.csv', mode ='r') as file:
+        csvFile = csv.reader(file)
+        allRecords = []
+
+        playerRecord = []
+
+        for lines in csvFile:
+            allRecords.append(lines)
+
+        for i in range(len(allRecords)):
+            if (allRecords[i][0] == player):
+                playerRecord.append(allRecords[i])
+
+        return(playerRecord)
