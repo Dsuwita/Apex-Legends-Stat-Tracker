@@ -1,17 +1,9 @@
 APEX LEGENDS RANK TRACKER 
 
-To get started:
+For better runtime get a unique auth key:
 
     (1) Get an auth key from https://portal.apexlegendsapi.com/
 
-    (2) Make sure Python3 is installed
+    (2) Change the auth.txt into your new auth key.
 
-    (3) Open a console and go to the location of the file
-
-    (4) Install these packages to use
-        pip install requests
-        pip install datetime
-        pip install pandas
-        pip install tk
-
-    (5) run the driver program using the following command: python3 driver.py
+    (3) Enjoy!!!

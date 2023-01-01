@@ -4,11 +4,11 @@ import datetime
 import pandas as pd
 import os
 
-def addProfile(player,platform,auth,update=False):
+def addProfile(player,platform,update=False):
     os.system('cls')
     
     today = datetime.datetime.now()
-    rawData = getCurrentRank(player,platform,auth)
+    rawData = getCurrentRank(player,platform)
 
     if(rawData == False):
         return()
@@ -28,11 +28,11 @@ def addProfile(player,platform,auth,update=False):
     else:
         print("Profile already exists please initialize a session instead.")
 
-def compareProfile(player, platform,auth):
+def compareProfile(player, platform):
     os.system('cls')
 
     today = datetime.datetime.now()
-    rawData = getCurrentRank(player,platform,auth)
+    rawData = getCurrentRank(player,platform)
 
     if(rawData == False):
         return()
@@ -68,12 +68,16 @@ def compareProfile(player, platform,auth):
 
         games = getGameHistory(player)
         
+        
         print("Games played this session:")
+        if(games != None):
+            for i in games:
+                print(f'{i[1]} RP as {i[2]}')
 
-        for i in games:
-            print(f'{i[1]} RP as {i[2]}')
+            print(f'{NetChange/len(games)} RP per game on average (Current Session)')
 
-        print(f'{NetChange/len(games)} RP per game on average (Current Session)')
+        else:
+            print("No games recorded yet.")
 
 def findprofile(player):
     os.system('cls')
@@ -91,7 +95,7 @@ def findprofile(player):
 
     return(0)
 
-def getCurrentRank(player,platform,auth):
+def getCurrentRank(player,platform):
     url = "https://api.mozambiquehe.re/bridge?auth=" + auth + "&player=" + player + "&platform=" + platform
 
     headers = {
@@ -120,12 +124,12 @@ def getCurrentRank(player,platform,auth):
 
     return(output)
 
-def updateProfile(player, platform,auth):
+def updateProfile(player, platform):
     clearGames(player)
 
     deleteProfile(player)
 
-    addProfile(player,platform,auth,True)
+    addProfile(player,platform,True)
 
 def deleteProfile(player):
     os.system('cls')
@@ -140,7 +144,7 @@ def deleteProfile(player):
     
     print("Profile " + player + " has been successfully deleted.")
 
-def recordGame(player,platform,auth):
+def recordGame(player,platform):
     os.system('cls')
 
     oldData = findprofile(player)
@@ -148,12 +152,12 @@ def recordGame(player,platform,auth):
         print("Profile not found, please add profile first.")
         return()
 
-    rawData = getCurrentRank(player,platform,auth)
+    rawData = getCurrentRank(player,platform)
 
     if(rawData == False):
         return()
 
-    data = [player,int(oldData[3]) - rawData["rankScore"], rawData["legend"]]
+    data = [player,int(oldData[3]) - int(rawData["rankScore"]), rawData["legend"]]
 
     with open('games.csv', mode ='a', newline='') as file:
         writer = csv.writer(file)
@@ -179,5 +183,15 @@ def getGameHistory(player):
         for i in range(len(allRecords)):
             if (allRecords[i][0] == player):
                 playerRecord.append(allRecords[i])
-
+    
+        if(playerRecord == []):
+            return(None)
+        
         return(playerRecord)
+
+def getAuth():
+    global auth
+    data = open("auth.txt", "r")
+    auth = data.read()
+
+getAuth()
