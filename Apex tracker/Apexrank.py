@@ -5,6 +5,8 @@ import pandas as pd
 import os
 
 def addProfile(player,platform,update=False):
+    "'Gets player data and stores it inside a csv file.'"
+
     os.system('cls')
     
     today = datetime.datetime.now()
@@ -29,6 +31,8 @@ def addProfile(player,platform,update=False):
         print("Profile already exists please initialize a session instead.")
 
 def compareProfile(player, platform):
+    "'Shows the current statistics comparison to when the session was initialized.'"
+
     os.system('cls')
 
     today = datetime.datetime.now()
@@ -80,6 +84,8 @@ def compareProfile(player, platform):
             print("No games recorded yet.")
 
 def findprofile(player):
+    "'Checks if a profile exists in the database'"
+
     os.system('cls')
 
     with open('profiles.csv', mode ='r') as file:
@@ -96,6 +102,8 @@ def findprofile(player):
     return(0)
 
 def getCurrentRank(player,platform):
+    "'Requests a user's profile from server and returns it.'"
+
     url = "https://api.mozambiquehe.re/bridge?auth=" + auth + "&player=" + player + "&platform=" + platform
 
     headers = {
@@ -125,6 +133,8 @@ def getCurrentRank(player,platform):
     return(output)
 
 def updateProfile(player, platform):
+    "'Resets a profile and clears all games related to that profile.'"
+
     clearGames(player)
 
     deleteProfile(player)
@@ -132,6 +142,8 @@ def updateProfile(player, platform):
     addProfile(player,platform,True)
 
 def deleteProfile(player):
+    "'Deletes a profile from database.'"
+
     os.system('cls')
     if(not findprofile(player)):
         print("No such profile has been added, please try again.")
@@ -145,6 +157,8 @@ def deleteProfile(player):
     print("Profile " + player + " has been successfully deleted.")
 
 def recordGame(player,platform):
+    "'Records RP change and legend name in the database'"
+
     os.system('cls')
 
     oldData = findprofile(player)
@@ -157,7 +171,14 @@ def recordGame(player,platform):
     if(rawData == False):
         return()
 
-    data = [player,int(oldData[3]) - int(rawData["rankScore"]), rawData["legend"]]
+    games = getGameHistory(player)
+    sumOfGames = 0
+
+    if(games != None):
+        for i in games:
+            sumOfGames += int(i[1])
+
+    data = [player,int(rawData["rankScore"]) - int(oldData[3]) + sumOfGames, rawData["legend"]]
 
     with open('games.csv', mode ='a', newline='') as file:
         writer = csv.writer(file)
@@ -166,11 +187,15 @@ def recordGame(player,platform):
     print("Game recorded successfully.")
 
 def clearGames(player):
+    "'Deletes all games related to a profile.'"
+
     df = pd.read_csv('games.csv')
     df = df[~df.username.isin([player])]
     df.to_csv('games.csv', index=False)
 
 def getGameHistory(player):
+    "'Gets all the games a profile has played from database.'"
+
     with open('games.csv', mode ='r') as file:
         csvFile = csv.reader(file)
         allRecords = []
@@ -190,6 +215,8 @@ def getGameHistory(player):
         return(playerRecord)
 
 def getAuth():
+    "'Gets Auth key from auth.txt.'"
+    
     global auth
     data = open("auth.txt", "r")
     auth = data.read()
