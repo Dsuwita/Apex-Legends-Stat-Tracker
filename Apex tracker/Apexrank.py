@@ -178,7 +178,7 @@ def recordGame(player,platform):
         for i in games:
             sumOfGames += int(i[1])
 
-    data = [player,int(rawData["rankScore"]) - int(oldData[3]) + sumOfGames, rawData["legend"]]
+    data = [player,int(rawData["rankScore"]) - (int(oldData[3]) + sumOfGames), rawData["legend"]]
 
     with open('games.csv', mode ='a', newline='') as file:
         writer = csv.writer(file)
@@ -221,4 +221,5 @@ def getAuth():
     data = open("auth.txt", "r")
     auth = data.read()
 
+#Gets auth key when program is initialized.
 getAuth()
