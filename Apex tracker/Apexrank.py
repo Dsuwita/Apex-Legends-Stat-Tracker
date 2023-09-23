@@ -223,3 +223,5 @@ def getAuth():
 
 #Gets auth key when program is initialized.
 getAuth()
+
+#testing how this works
